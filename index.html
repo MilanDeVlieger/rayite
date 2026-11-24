@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rayité · Karitéboter</title>
+<meta name="description" content="Rayité, atelier de beauté naturelle: 100% karitéboter uit Ghana, met de zoete geur van mango of de subtiele geur van olijf.">
+<link rel="icon" href="img/monogram.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* palet afgeleid van het logo en de pot */
+    --paper:#f4f0e3;      /* achtergrond van het logo */
+    --stone:#e7d9bf;      /* travertijn uit de productfoto's */
+    --gold:#b08a3e;       /* monogram en deksel */
+    --gold-deep:#8a6a2b;
+    --olive:#3d3f28;      /* woordmerk RAYITÉ */
+    --mango:#d9742a;      /* "met zoete mangogeur" op het label */
+    --olijf:#6b7a3a;
+    --ink:#2f3020; --muted:#66624f;
+    --radius:4px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:Montserrat,system-ui,sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
+  h1,h2{font-variant-numeric:lining-nums}
+  h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;line-height:1.05;color:var(--olive)}
+  a{color:inherit}
+  img{max-width:100%;display:block}
+  :focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px}
+
+  /* zacht licht zoals op de productfoto's */
+  .backdrop{position:fixed;inset:0;z-index:-1;background:
+    radial-gradient(120% 70% at 75% 10%, rgba(255,250,236,.9), transparent 60%),
+    linear-gradient(115deg, transparent 30%, rgba(255,255,255,.35) 38%, transparent 46%, transparent 55%, rgba(255,255,255,.25) 62%, transparent 70%),
+    linear-gradient(180deg, var(--paper) 0%, var(--stone) 100%)}
+  #scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;transition:opacity .2s linear}
+  main{position:relative;z-index:1}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:14px clamp(16px,4vw,48px);transition:background .3s,box-shadow .3s}
+  nav.solid{background:rgba(244,240,227,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(61,63,40,.1)}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand img{height:34px;width:auto}
+  .brand span{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:600;letter-spacing:.14em;color:var(--olive)}
+  nav ul{display:flex;gap:28px;list-style:none;font-size:.78rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+  nav ul a{text-decoration:none;color:var(--olive);opacity:.8}
+  nav ul a:hover{opacity:1;color:var(--gold-deep)}
+  @media (max-width:760px){nav ul{display:none}}
+
+  section{padding:clamp(80px,11vw,140px) clamp(16px,6vw,96px)}
+
+  /* HERO */
+  .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:24px;padding-top:110px}
+  .hero .copy{max-width:34rem}
+  .tagline{display:block;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:500;margin-bottom:22px}
+  .hero h1{font-size:clamp(3rem,6.4vw,5.6rem);letter-spacing:-.01em}
+  .hero h1 i{font-weight:400;color:var(--gold-deep)}
+  .hero p{margin:22px 0 30px;font-size:1.05rem;color:var(--muted);max-width:30rem}
+  .variants{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap}
+  .variants button{font:500 .8rem/1 Montserrat,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:12px 18px 12px 14px;border-radius:999px;border:1px solid rgba(61,63,40,.25);background:rgba(255,255,255,.5);color:var(--olive);cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:background .2s,border-color .2s}
+  .variants button::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--sw);box-shadow:inset 0 -2px 4px rgba(0,0,0,.25)}
+  .variants button[aria-pressed="true"]{background:var(--olive);color:var(--paper);border-color:var(--olive)}
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--olive);color:var(--paper);text-decoration:none;padding:15px 26px;border-radius:999px;font-weight:500;font-size:.9rem;letter-spacing:.06em;transition:background .2s}
+  .btn:hover{background:var(--gold-deep)}
+  .btn.ghost{background:transparent;color:var(--olive);border:1px solid var(--olive);margin-left:8px}
+  .btn.ghost:hover{background:var(--olive);color:var(--paper)}
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;text-align:center;align-content:start;padding-top:46vh;padding-bottom:60px}
+    .hero .copy{margin:0 auto}
+    .hero h1{font-size:clamp(2.5rem,11vw,3.4rem)}
+    .hero p{font-size:.98rem;margin:16px auto 22px}
+    .variants{justify-content:center}
+    .btn.ghost{margin-left:0;margin-top:10px}
+  }
+
+  .panel{background:rgba(244,240,227,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius);padding:clamp(28px,4vw,56px)}
+  h2{font-size:clamp(2.3rem,4.6vw,3.8rem);margin-bottom:22px}
+  .lead{color:var(--muted);font-size:1.05rem;margin-bottom:14px}
+
+  /* VERHAAL */
+  .story{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:center}
+  .photo{border-radius:var(--radius);overflow:hidden;background:var(--stone);box-shadow:0 30px 60px -34px rgba(61,63,40,.45)}
+  .photo img{width:100%;height:100%;object-fit:cover}
+  .story .photo{aspect-ratio:4/5}
+  @media (max-width:860px){.story{grid-template-columns:1fr}}
+
+  /* GEUREN */
+  .scents{background:var(--paper);position:relative;z-index:2}
+  .scents .intro{max-width:40rem}
+  .scent-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px);margin-top:48px}
+  .scent{display:grid;grid-template-rows:auto 1fr}
+  .scent .photo{aspect-ratio:4/5}
+  .scent .body{padding:26px 4px 0}
+  .scent h3{font-size:2rem;margin-bottom:4px}
+  .scent .sub{font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-bottom:12px;display:block}
+  .scent p{color:var(--muted)}
+  @media (max-width:760px){.scent-grid{grid-template-columns:1fr}}
+
+  /* WAAROM */
+  .benefits{background:var(--olive);color:var(--paper);position:relative;z-index:2}
+  .benefits h2{color:var(--paper)}
+  .benefits .row{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:44px}
+  .benefits h3{color:var(--paper);font-size:1.6rem;margin-bottom:8px;padding-top:18px;border-top:1px solid rgba(176,138,62,.6)}
+  .benefits p{color:rgba(244,240,227,.75);font-size:.95rem}
+  @media (max-width:860px){.benefits .row{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.benefits .row{grid-template-columns:1fr}}
+
+  /* GEBRUIK */
+  .howto{background:var(--paper);position:relative;z-index:2}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:44px;counter-reset:s}
+  .step::before{counter-increment:s;content:counter(s);font-family:"Cormorant Garamond",serif;font-style:italic;font-size:3rem;line-height:1;color:var(--gold);display:block;margin-bottom:10px}
+  .step h3{font-size:1.6rem;margin-bottom:6px}
+  .step p{color:var(--muted)}
+  @media (max-width:860px){.steps{grid-template-columns:1fr}}
+
+  /* GALERIJ */
+  .gallery{background:var(--stone);position:relative;z-index:2}
+  .gallery .grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-template-rows:auto auto;gap:16px;margin-top:40px}
+  .gallery .photo:first-child{grid-row:span 2}
+  .gallery .photo{aspect-ratio:auto;min-height:220px}
+  @media (max-width:760px){.gallery .grid{grid-template-columns:1fr 1fr}.gallery .photo:first-child{grid-column:span 2;grid-row:auto}}
+
+  /* CONTACT */
+  .contact{background:var(--paper);position:relative;z-index:2;text-align:center}
+  .contact img.logo{width:min(260px,60vw);margin:0 auto 28px}
+  .contact p{max-width:32rem;margin:0 auto 30px;color:var(--muted)}
+  .contact .links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  footer{background:var(--olive);color:rgba(244,240,227,.7);padding:26px clamp(16px,6vw,96px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.8rem;letter-spacing:.06em;position:relative;z-index:2}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<nav id="nav">
+  <a href="#top" class="brand" aria-label="Rayité, naar boven"><img src="img/monogram.png" alt=""><span>RAYITÉ</span></a>
+  <ul>
+    <li><a href="#verhaal">Verhaal</a></li>
+    <li><a href="#geuren">Geuren</a></li>
+    <li><a href="#gebruik">Gebruik</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="copy">
+      <span class="tagline">Atelier de beauté naturelle</span>
+      <h1>100% karitéboter, met de <i id="scentWord">zoete geur van mango</i>.</h1>
+      <p>Pure karitéboter uit Ghana voor intense hydratatie. Rijk, zacht en verrijkt met een natuurlijke geur. Kies je favoriet.</p>
+      <div class="variants" role="group" aria-label="Kies een geur">
+        <button type="button" data-variant="mango" aria-pressed="true" style="--sw:#c9a24e">Mango</button>
+        <button type="button" data-variant="olijf" aria-pressed="false" style="--sw:#c7c7c3">Olijf</button>
+      </div>
+      <a class="btn" href="#contact">Bestellen</a>
+      <a class="btn ghost" href="#verhaal">Ontdek meer</a>
+    </div>
+    <div></div>
+  </section>
+
+  <section id="verhaal" class="story">
+    <div class="panel reveal">
+      <h2>Van de sheaboom naar jouw huid.</h2>
+      <p class="lead">In het noorden van Ghana worden sheanoten al generaties lang met de hand verzameld, gekraakt en tot boter verwerkt. Dat ambacht is de basis van Rayité.</p>
+      <p class="lead">Wij vullen elke pot met 100% karitéboter en verrijken die met een zachte geur. Meer is niet nodig voor een huid die de hele dag soepel aanvoelt.</p>
+    </div>
+    <div class="photo reveal">
+      <img src="img/pot-mango.jpg" alt="Een pot Rayité karitéboter met zoete mangogeur, met goudkleurig deksel" loading="lazy">
+    </div>
+  </section>
+
+  <section id="geuren" class="scents">
+    <div class="intro reveal">
+      <h2>Twee geuren, één pure basis.</h2>
+      <p class="lead">Dezelfde rijke karitéboter, in twee varianten. Herken ze aan het deksel: goud voor mango, zilver voor olijf.</p>
+    </div>
+    <div class="scent-grid">
+      <article class="scent reveal">
+        <div class="photo"><img src="img/mango.jpg" alt="Rayité karitéboter met zoete mangogeur tussen verse mango en sheanoten" loading="lazy"></div>
+        <div class="body">
+          <span class="sub" style="color:var(--mango)">Met zoete mangogeur</span>
+          <h3>Karitéboter Mango</h3>
+          <p>Rijke hydratatie met een heerlijk tropische en verfrissende geur van mango.</p>
+        </div>
+      </article>
+      <article class="scent reveal">
+        <div class="photo"><img src="img/olijf.jpg" alt="Rayité karitéboter met subtiele olijfgeur tussen olijven en olijftakken" loading="lazy"></div>
+        <div class="body">
+          <span class="sub" style="color:var(--olijf)">Met subtiele olijfgeur</span>
+          <h3>Karitéboter Olijf</h3>
+          <p>Dezelfde intense hydratatie met de zachte, mediterrane geur van olijf.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="benefits">
+    <h2>Waarom karitéboter?</h2>
+    <div class="row">
+      <div><h3>Intense hydratatie</h3><p>Voor droge plekken, ellebogen, knieën en handen.</p></div>
+      <div><h3>100% puur</h3><p>Karitéboter als basis, zonder vulstoffen.</p></div>
+      <div><h3>Rijk en zacht</h3><p>Smelt op de huid en laat haar soepel aanvoelen.</p></div>
+      <div><h3>Uit Ghana</h3><p>Met respect voor het ambacht van de sheaboom.</p></div>
+    </div>
+  </section>
+
+  <section id="gebruik" class="howto">
+    <h2>Zo gebruik je het.</h2>
+    <div class="steps">
+      <div class="step reveal"><h3>Neem een klein beetje</h3><p>Een kleine hoeveelheid volstaat. Warm het op tussen je vingers tot het smelt.</p></div>
+      <div class="step reveal"><h3>Masseer in</h3><p>Breng aan op een licht vochtige huid, het liefst na het douchen.</p></div>
+      <div class="step reveal"><h3>Elke dag</h3><p>Voor een zachte, glanzende huid. Ook lekker voor droge haarpunten.</p></div>
+    </div>
+  </section>
+
+  <section class="gallery">
+    <h2>Rayité in beeld.</h2>
+    <div class="grid">
+      <div class="photo reveal"><img src="img/duo.jpg" alt="De mango- en olijfvariant van Rayité naast elkaar" loading="lazy"></div>
+      <div class="photo reveal"><img src="img/pot-sfeer.jpg" alt="Een pot Rayité in sfeervol avondlicht naast een gouden plantenpot" loading="lazy"></div>
+      <div class="photo reveal"><img src="img/pot-mango.jpg" alt="Close-up van het label: karitéboter met zoete mangogeur" loading="lazy" style="object-position:50% 70%"></div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <img class="logo reveal" src="img/logo.png" alt="Rayité, atelier de beauté naturelle">
+    <h2>Zin om te proberen?</h2>
+    <p>Stuur ons een bericht en we bezorgen je pot karitéboter zo snel mogelijk.</p>
+    <div class="links">
+      <!-- TODO: echte contactgegevens van de klant invullen -->
+      <a class="btn" href="mailto:info@rayite.be">info@rayite.be</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© <span id="yr"></span> Rayité · Atelier de beauté naturelle</span>
+  <span>Karitéboter uit Ghana</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 40), {passive:true});
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), {threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+const VARIANTS = {
+  mango: {word:'zoete geur van mango', sub:'MET ZOETE MANGOGEUR', subColor:'#d9742a',
+          desc:'Geniet van de rijke hydratatie van karitéboter, verrijkt met een heerlijk tropische en verfrissende mangogeur.',
+          lid:0xd19a2c, sticker:'#f1e6cb'},
+  olijf: {word:'subtiele geur van olijf', sub:'MET SUBTIELE OLIJFGEUR', subColor:'#6b7a3a',
+          desc:'Geniet van de rijke hydratatie van karitéboter, verrijkt met de zachte en subtiele geur van olijf.',
+          lid:0xc4c5c3, sticker:'#f6f6f3'}
+};
+let current = 'mango';
+const buttons = document.querySelectorAll('.variants button');
+buttons.forEach(b => b.addEventListener('click', () => setVariant(b.dataset.variant)));
+function setVariant(v){
+  current = v;
+  buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.variant === v));
+  document.getElementById('scentWord').textContent = VARIANTS[v].word;
+  window.__jar && window.__jar.setVariant(v);
+}
+
+// ---------- 3D: de Rayité-pot, nagebouwd naar de productfoto's ----------
+(function(){
+  if (!window.THREE) return;
+  const canvas = document.getElementById('scene');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = .92;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
+
+  // Omgevingsbelichting: een warme "studio" zodat metaal en plastic echt reflecteren
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const env = new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.BoxGeometry(30,30,30), new THREE.MeshBasicMaterial({color:0x5e5242, side:THREE.BackSide})));
+  const softbox = (w,h,x,y,z,c,i) => { const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({color:new THREE.Color(c).multiplyScalar(i), side:THREE.DoubleSide})); m.position.set(x,y,z); m.lookAt(0,0,0); env.add(m); };
+  softbox(10,6, 0,12,4, 0xfff6e6, 2.2);
+  softbox(4,10, -12,3,4, 0xffffff, 1.4);
+  softbox(3,8, 12,2,-3, 0xffe2b8, 1.0);
+  softbox(30,2, 0,-6,10, 0xe7d9bf, .6);
+  scene.environment = pmrem.fromScene(env, .02).texture;
+
+  const sun = new THREE.DirectionalLight(0xfff1dc, 1.3);
+  sun.position.set(-4, 8, 5); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048,2048); sun.shadow.radius = 6;
+  Object.assign(sun.shadow.camera, {left:-4,right:4,top:4,bottom:-4,near:1,far:25});
+  scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xfffaf0, 0xc9b38f, .35));
+
+  const root = new THREE.Group(); scene.add(root);
+  const jar = new THREE.Group(); root.add(jar);
+
+  // Maten (eenheden): breed en laag, zoals de echte pot (ongeveer 2:1)
+  const R = 1.3;          // straal pot
+  const H = 1.0;          // hoogte potlichaam tot de schouder
+  const RN = R - .1;      // hals met schroefdraad
+  const RL = R + .02;     // straal deksel
+  const LID_Y = H + .03, LID_H = .36;
+
+  // Potlichaam: wit, licht glanzend plastic met afgeronde bodem
+  const bodyProfile = [
+    [0,0],[R-.1,0],[R-.04,.012],[R-.008,.05],[R,.1],
+    [R,H-.05],[R-.006,H-.015],[R-.03,H],[RN,H],
+    [RN,H+.24],[RN-.03,H+.26],[RN-.06,H+.25],[RN-.06,H+.12]
+  ].map(p => new THREE.Vector2(p[0],p[1]));
+  const white = new THREE.MeshPhysicalMaterial({color:0xfbfaf6, roughness:.32, clearcoat:.6, clearcoatRoughness:.25, envMapIntensity:.9});
+  const body = new THREE.Mesh(new THREE.LatheGeometry(bodyProfile, 128), white);
+  body.castShadow = true; body.receiveShadow = true; jar.add(body);
+  // schroefdraad op de hals
+  [H+.07, H+.15].forEach(y => { const t = new THREE.Mesh(new THREE.TorusGeometry(RN, .016, 10, 128), white); t.rotation.x = Math.PI/2; t.position.y = y; jar.add(t); });
+
+  // Karitéboter in de pot (zichtbaar als het deksel opengaat)
+  const bPts = []; const RB = RN-.06;
+  for (let i=0;i<=40;i++){ const r=RB*i/40; bPts.push(new THREE.Vector2(r, H+.17 + .018*Math.cos(r*14) + .03*(1-(r/RB)**2))); }
+  const butterGeo = new THREE.LatheGeometry(bPts.reverse(), 96);
+  const bp = butterGeo.attributes.position;
+  for (let i=0;i<bp.count;i++){ const x=bp.getX(i), z=bp.getZ(i); bp.setY(i, bp.getY(i) + .012*Math.sin(x*9+z*5) * Math.cos(z*7-x*3)); }
+  butterGeo.computeVertexNormals();
+  jar.add(new THREE.Mesh(butterGeo, new THREE.MeshStandardMaterial({color:0xf3e8cc, roughness:.85, side:THREE.DoubleSide})));
+
+  // Wikkel-etiket
+  const labelCanvas = document.createElement('canvas'); labelCanvas.width = 4096; labelCanvas.height = 384;
+  const labelTex = new THREE.CanvasTexture(labelCanvas); labelTex.encoding = THREE.sRGBEncoding; labelTex.anisotropy = 8;
+  const label = new THREE.Mesh(
+    new THREE.CylinderGeometry(R+.004, R+.004, .74, 128, 1, true, Math.PI, Math.PI*2),
+    new THREE.MeshPhysicalMaterial({map:labelTex, roughness:.38, clearcoat:.5, clearcoatRoughness:.3}));
+  label.position.y = .5; jar.add(label);
+
+  // Deksel: geribbeld metalen schroefdeksel met ronde sticker
+  const lid = new THREE.Group(); jar.add(lid);
+  const ribs = document.createElement('canvas'); ribs.width = 2048; ribs.height = 8;
+  { const g = ribs.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0,0,2048,8); g.fillStyle = '#000';
+    for (let i=0;i<200;i++) g.fillRect(i*2048/200, 0, 4, 8); }
+  const ribTex = new THREE.CanvasTexture(ribs);
+  const metal = new THREE.MeshPhysicalMaterial({color:VARIANTS.mango.lid, metalness:1, roughness:.24, clearcoat:.4, envMapIntensity:1.25});
+  const metalRibbed = metal.clone(); metalRibbed.bumpMap = ribTex; metalRibbed.bumpScale = .006;
+  const side = new THREE.Mesh(new THREE.CylinderGeometry(RL, RL, LID_H-.1, 160, 1, true), metalRibbed);
+  side.position.y = .02 + (LID_H-.1)/2; side.castShadow = true; lid.add(side);
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(RL, RL, .08, 160, 1, true), metal);
+  band.position.y = LID_H-.04; lid.add(band);
+  const topProfile = [[RL,LID_H],[RL-.012,LID_H+.018],[RL-.05,LID_H+.024],[RL-.08,LID_H+.012],[RL-.1,LID_H+.008],[0,LID_H+.008]].map(p=>new THREE.Vector2(p[0],p[1]));
+  const top = new THREE.Mesh(new THREE.LatheGeometry(topProfile.reverse(), 160), metal); top.castShadow = true; lid.add(top);
+  const lip = new THREE.Mesh(new THREE.TorusGeometry(RL-.006, .02, 12, 160), metal); lip.rotation.x = Math.PI/2; lip.position.y = .02; lid.add(lip);
+  const under = new THREE.Mesh(new THREE.RingGeometry(RN-.08, RL, 96), new THREE.MeshStandardMaterial({color:0xd8d2c4, side:THREE.DoubleSide, roughness:.6}));
+  under.rotation.x = Math.PI/2; under.position.y = .01; lid.add(under);
+  const stickerCanvas = document.createElement('canvas'); stickerCanvas.width = stickerCanvas.height = 1024;
+  const stickerTex = new THREE.CanvasTexture(stickerCanvas); stickerTex.encoding = THREE.sRGBEncoding; stickerTex.anisotropy = 8;
+  const sticker = new THREE.Mesh(new THREE.CircleGeometry(RL-.13, 128), new THREE.MeshStandardMaterial({map:stickerTex, roughness:.55}));
+  sticker.rotation.x = -Math.PI/2; sticker.position.y = LID_H+.011; lid.add(sticker);
+  lid.position.y = LID_Y;
+
+  // Schaduw op de "stenen" ondergrond
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(30,30), new THREE.ShadowMaterial({opacity:.16}));
+  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; root.add(ground);
+
+  // Rondzwevende ingrediënten per geur
+  const floaters = {mango:[], olijf:[], both:[]};
+  const leafShape = (w,l) => { const s=new THREE.Shape(); s.moveTo(0,0); s.quadraticCurveTo(w,l*.45,0,l); s.quadraticCurveTo(-w,l*.45,0,0); return new THREE.ShapeGeometry(s, 12); };
+  const mats = {
+    nut: new THREE.MeshStandardMaterial({color:0x4a2b16, roughness:.6}),
+    cube: new THREE.MeshPhysicalMaterial({color:0xe06a00, roughness:.3, clearcoat:.8}),
+    green: new THREE.MeshPhysicalMaterial({color:0x5c6b14, roughness:.3, clearcoat:1}),
+    black: new THREE.MeshPhysicalMaterial({color:0x2a1c26, roughness:.3, clearcoat:1}),
+    mLeaf: new THREE.MeshStandardMaterial({color:0x234d17, roughness:.5, side:THREE.DoubleSide}),
+    oLeaf: new THREE.MeshStandardMaterial({color:0x4b5a35, roughness:.6, side:THREE.DoubleSide})
+  };
+  function add(kind, mesh, pos){
+    mesh.position.copy(pos);
+    mesh.userData = {base:pos.clone(), ph:Math.random()*6, sp:.4+Math.random()*.5, rot:new THREE.Vector3(Math.random()-.5, Math.random()-.5, Math.random()-.5), s:1};
+    mesh.rotation.set(Math.random()*3, Math.random()*3, Math.random()*3);
+    root.add(mesh); floaters[kind].push(mesh);
+  }
+  const V = (x,y,z) => new THREE.Vector3(x,y,z);
+  const nutGeo = new THREE.SphereGeometry(.17, 24, 16); nutGeo.scale(1,.8,1.25);
+  [V(-2.1,.25,.9), V(1.9,.2,1.5), V(-1.5,.18,1.9)].forEach(p => add('both', new THREE.Mesh(nutGeo, mats.nut), p));
+  const cubeGeo = new THREE.BoxGeometry(.24,.24,.24, 2,2,2);
+  [V(2.3,1.9,-.2), V(2.7,.9,.6), V(-1.85,2.3,-.4), V(-2.0,.9,.2), V(1.5,2.5,.3)].forEach(p => add('mango', new THREE.Mesh(cubeGeo, mats.cube), p));
+  [V(2.2,2.6,-.8), V(-1.7,3.0,-.6)].forEach(p => add('mango', new THREE.Mesh(leafShape(.28,1.1), mats.mLeaf), p));
+  const oliveGeo = new THREE.SphereGeometry(.17, 24, 16); oliveGeo.scale(1,1,1.35);
+  [V(2.3,1.9,-.2), V(2.7,.9,.6), V(-1.85,2.3,-.4), V(-2.0,.9,.2), V(1.5,2.5,.3)].forEach((p,i) => add('olijf', new THREE.Mesh(oliveGeo, i%2?mats.black:mats.green), p));
+  [V(2.2,2.6,-.8), V(-1.7,3.0,-.6), V(-1.8,2.8,.2)].forEach(p => add('olijf', new THREE.Mesh(leafShape(.12,1.1), mats.oLeaf), p));
+  floaters.olijf.forEach(m => { m.userData.s = 0; m.scale.setScalar(0.001); });
+
+  // Etiket en sticker tekenen, met het echte logo
+  const load = src => new Promise(r => { const i=new Image(); i.onload=()=>r(i); i.onerror=()=>r(null); i.src=src; });
+  let logoImg=null, monoImg=null;
+  function drawLabel(v){
+    const c = VARIANTS[v], g = labelCanvas.getContext('2d'), W = labelCanvas.width, Hc = labelCanvas.height, cx = W/2;
+    g.fillStyle = '#faf9f6'; g.fillRect(0,0,W,Hc);
+    // naad achteraan
+    g.fillStyle = 'rgba(0,0,0,.06)'; g.fillRect(0,0,6,Hc); g.fillRect(W-6,0,6,Hc);
+    // logo-blok
+    g.fillStyle = 'rgba(232,229,234,.75)'; g.fillRect(cx-170, 10, 340, 162);
+    if (monoImg) { const h=86, w=monoImg.width*h/monoImg.height; g.drawImage(monoImg, cx-w/2, 18, w, h); }
+    g.textAlign = 'center'; g.fillStyle = '#2f2f26';
+    g.font = '500 44px "Cormorant Garamond", Georgia, serif'; g.fillText('RAYITÉ', cx, 144);
+    g.font = '500 12px Montserrat, sans-serif'; g.fillStyle = '#8a6a2b'; g.fillText('ATELIER DE BEAUTÉ NATURELLE', cx, 163);
+    g.fillStyle = '#33332b'; g.font = '500 80px "Cormorant Garamond", Georgia, serif';
+    if ('letterSpacing' in g) g.letterSpacing = '6px';
+    g.fillText('KARITÉBOTER', cx, 246);
+    if ('letterSpacing' in g) g.letterSpacing = '3px';
+    g.fillStyle = c.subColor; g.font = '600 32px Montserrat, sans-serif'; g.fillText(c.sub, cx, 294);
+    if ('letterSpacing' in g) g.letterSpacing = '0px';
+    g.fillStyle = '#55524a'; g.font = 'italic 500 23px Montserrat, sans-serif'; g.fillText(c.desc, cx, 340);
+    // tekstblok op de achterkant
+    g.textAlign = 'left'; g.fillStyle = '#d9742a'; if (v==='olijf') g.fillStyle = '#6b7a3a';
+    g.font = '600 18px Montserrat, sans-serif'; g.fillText('KARITÉBOTER', 3150, 120);
+    g.fillStyle = 'rgba(60,60,50,.35)';
+    [150,175,200,225,265,290].forEach((y,i) => g.fillRect(3150, y, [520,480,500,300,220,180][i], 9));
+    labelTex.needsUpdate = true;
+  }
+  function drawSticker(v){
+    const g = stickerCanvas.getContext('2d'), S = 1024;
+    g.clearRect(0,0,S,S);
+    g.fillStyle = VARIANTS[v].sticker; g.fillRect(0,0,S,S);
+    if (logoImg){ const w=600, h=logoImg.height*w/logoImg.width; g.drawImage(logoImg, (S-w)/2, (S-h)/2 - 10, w, h); }
+    stickerTex.needsUpdate = true;
+  }
+  drawLabel('mango'); drawSticker('mango');
+  Promise.all([load('img/logo.png'), load('img/monogram.png'), document.fonts ? document.fonts.ready : null]).then(([l,m]) => {
+    logoImg = l; monoImg = m;
+    Promise.all([document.fonts.load('500 80px "Cormorant Garamond"'), document.fonts.load('600 26px Montserrat'), document.fonts.load('italic 500 21px Montserrat')])
+      .catch(()=>{}).then(() => { drawLabel(current); drawSticker(current); });
+  });
+
+  const lidTarget = new THREE.Color(VARIANTS.mango.lid);
+  window.__jar = { setVariant(v){
+    lidTarget.set(VARIANTS[v].lid); drawLabel(v); drawSticker(v);
+    floaters.mango.forEach(m => m.userData.s = v==='mango' ? 1 : 0);
+    floaters.olijf.forEach(m => m.userData.s = v==='olijf' ? 1 : 0);
+    spin = 1;
+  }};
+  let spin = 0;
+
+  // Interactie
+  let mx=0, my=0, tx=0, ty=0;
+  addEventListener('pointermove', e => { mx=(e.clientX/innerWidth-.5)*2; my=(e.clientY/innerHeight-.5)*2; }, {passive:true});
+  function layout(){
+    const w=innerWidth, h=innerHeight;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/h; camera.updateProjectionMatrix();
+    const mobile = w < 860;
+    camera.position.set(0, 3.1, 9.2); camera.lookAt(0, .55, 0);
+    root.userData.baseX = mobile ? 0 : 2.15;
+    root.userData.baseY = mobile ? 1.55 : -.15;
+    root.userData.scale = mobile ? .62 : 1;
+    root.userData.mobile = mobile;
+    // hoogte van één schermhoogte in wereld-eenheden (op de afstand van de pot)
+    root.userData.screen = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * camera.position.distanceTo(new THREE.Vector3(0,.55,0));
+  }
+  layout(); addEventListener('resize', layout);
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const smooth = (a,b,x) => { const t=Math.min(1,Math.max(0,(x-a)/(b-a))); return t*t*(3-2*t); };
+  const clock = new THREE.Clock();
+  let rotY = -.35;
+  function tick(){
+    const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
+    const p = Math.min(scrollY / innerHeight, 3);
+    tx += (mx-tx)*.05; ty += (my-ty)*.05;
+
+    // Bij scrollen: deksel draait los en komt omhoog, pot draait naar je toe
+    const open = smooth(.05, .7, p);
+    const anim = reduce ? 0 : 1;
+    root.position.x = root.userData.baseX * (1 - smooth(0, 1, p) * 1.9);
+    // op mobiel scrolt de pot mee naar boven, zodat hij nooit achter de tekst hangt
+    root.position.y = root.userData.baseY + anim*Math.sin(t*.8)*.04 + (root.userData.mobile ? p*root.userData.screen : -p*.35);
+    root.scale.setScalar(root.userData.scale);
+    spin = Math.max(0, spin - dt*.9);
+    rotY += ((-.35 + anim*Math.sin(t*.35)*.35 + tx*.35 + p*1.2) - rotY) * .06;
+    // bij het wisselen van geur maakt de pot één volle draai (1 → 0, ease-in-out)
+    jar.rotation.y = rotY + (reduce ? 0 : smooth(0, 1, 1 - spin) * Math.PI * 2);
+    jar.rotation.x = .05 + ty*.06;
+    lid.position.y = LID_Y + open*1.15;
+    lid.rotation.y = -open*Math.PI*1.5;
+    lid.rotation.z = open*.18; lid.position.x = open*.35;
+
+    metal.color.lerp(lidTarget, .08); metalRibbed.color.copy(metal.color);
+
+    for (const k in floaters) floaters[k].forEach((m,i) => {
+      const u = m.userData;
+      const s = THREE.MathUtils.lerp(m.scale.x, Math.max(u.s,.001), .08); m.scale.setScalar(s);
+      m.visible = s > .01;
+      m.position.y = u.base.y + anim*Math.sin(t*u.sp+u.ph)*.15 + p*(.4+i*.15);
+      m.position.x = u.base.x + tx*.2;
+      if (!reduce){ m.rotation.x += u.rot.x*.01; m.rotation.y += u.rot.y*.01; }
+    });
+
+    canvas.style.opacity = Math.max(0, 1 - Math.max(0, p-1.3)*2);
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
+</body>
+</html>
